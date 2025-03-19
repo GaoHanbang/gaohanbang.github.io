@@ -7,9 +7,8 @@ redirect_from:
   - /about.html
 ---
 
-I'm a third-year Ph.D. candidate at [École Centrale de Nantes](https://www.ec-nantes.fr/english-version), specializing in robotics research at the [Laboratoire des Sciences du Numérique de Nantes (LS2N)](https://www.ls2n.fr/annuaire/Hanbang%20GAO/). My research interests include Cable-Driven Parallel Robots, Human-Robot Interaction, and ROS Simulation.
+I'm a third-year Ph.D. candidate at [École Centrale de Nantes](https://www.ec-nantes.fr/english-version), specializing in robotics research at the [Laboratoire des Sciences du Numérique de Nantes (LS2N)](https://www.ls2n.fr/annuaire/Hanbang%20GAO/). My research interests include Cable-Driven Parallel Robots, Physical Human-Robot Interaction, Human-Robot Collaboration and ROS Simulation.
 
 My doctoral thesis, titled "Management of Physical Human-Cable-Driven Parallel Robot Interactions," is supervised by Dr. [Stéphane Caro](https://scholar.google.fr/citations?user=IiBLzvgAAAAJ&hl=fr) and Dr. [Christine Chevallereau](https://scholar.google.com/citations?user=JzYkhbUAAAAJ&hl=en).
 
-In my spare time, I enjoy outdoor sports, photography, music, and fine art.
-
+In my spare time, I enjoy playing tennis, rock climbing, and reading. I’m also a polyglot, an extreme sports enthusiast, and a certified diver.
