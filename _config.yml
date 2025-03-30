@@ -21,7 +21,7 @@ repository               : "GaoHanbang/gaohanbang.github.io"
 #               Additional customization can be done by editing /_includes/author-profile.html
 author:
   # Biographic information
-  avatar           : "webpage profile.png"
+  avatar           : "sky2.png"
   name             : "Hanbang Gao"
   pronouns         : # example: "she/her"  
   bio              : "PhD Candidate in Robotics"
