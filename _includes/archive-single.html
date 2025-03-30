@@ -1,13 +1,11 @@
 {% include base_path %}
 
-{# Check if a custom teaser image is provided in the post's header; otherwise, use the default teaser #}
 {% if post.header.teaser %}
   {% capture teaser %}{{ post.header.teaser }}{% endcapture %}
 {% else %}
   {% assign teaser = site.teaser %}
 {% endif %}
 
-{# Process the post title: if post.id exists, convert markdown to HTML and remove extra <p> tags #}
 {% if post.id %}
   {% assign title = post.title | markdownify | remove: "<p>" | remove: "</p>" %}
 {% else %}
@@ -17,7 +15,6 @@
 <div class="{{ include.type | default: "list" }}__item">
   <article class="archive__item" itemscope itemtype="http://schema.org/CreativeWork">
     
-    {# Display teaser image if the layout type is "grid" and a teaser exists #}
     {% if include.type == "grid" and teaser %}
       <div class="archive__item-teaser">
         <img src=
@@ -30,7 +27,6 @@
       </div>
     {% endif %}
 
-    {# Display the post title and link #}
     <h2 class="archive__item-title" itemprop="headline">
       {% if post.link %}
         <a href="{{ post.link }}">{{ title }}</a> <a href="{{ base_path }}{{ post.url }}" rel="permalink"><i class="fa fa-link" aria-hidden="true" title="permalink"></i><span class="sr-only">Permalink</span></a>
@@ -39,17 +35,14 @@
       {% endif %}
     </h2>
     
-    {# Display read time if available #}
     {% if post.read_time %}
       <p class="page__meta"><i class="fa fa-clock-o" aria-hidden="true"></i> {% include read-time.html %}</p>
     {% endif %}
 
-    {# Display meta information based on the post collection #}
     {% if post.collection == 'teaching' %}
       <p>{{ post.type }}, <i>{{ post.venue }}</i>, {{ post.date | default: "1900-01-01" | date: "%Y" }}</p>
     {% elsif post.collection == 'publications' %}
       {% if post.status == "no" %}
-        {# If status is "no", do not display publication meta information #}
       {% elsif post.status == "Submitted" %}
         <p>Submitted to <i>{{ post.venue }}</i>, {{ post.date | default: "1900-01-01" | date: "%Y" }}</p>
       {% else %}
@@ -64,7 +57,6 @@
       </p>
     {% endif %}
 
-    {# Display the post excerpt and a "Read more" link if enabled #}
     {% if post.excerpt and site.read_more != 'enabled' %}
       <p class="archive__item-excerpt" itemprop="description">{{ post.excerpt | markdownify }}</p>
     {% elsif post.excerpt and site.read_more == 'enabled' %}
@@ -73,7 +65,6 @@
       </p>
     {% endif %}
     
-    {# Display citation and download links if available #}
     {% if post.citation and post.paperurl and post.slidesurl %}
       <p>Recommended citation: {{ post.citation }}<br /><a href="{{ post.paperurl }}">Download Paper</a> | <a href="{{ post.slidesurl }}">Download Slides</a></p>
     {% elsif post.citation and post.paperurl %}
