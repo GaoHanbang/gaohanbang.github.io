@@ -7,8 +7,8 @@ redirect_from:
   - /about.html
 ---
 
-I'm a third-year Ph.D. candidate at [École Centrale de Nantes](https://www.ec-nantes.fr/english-version), specializing in robotics research at the [Laboratoire des Sciences du Numérique de Nantes (LS2N)](https://www.ls2n.fr/annuaire/Hanbang%20GAO/). My research interests include Cable-Driven Parallel Robots, Physical Human-Robot Interaction, Human-Robot Collaboration and ROS Simulation.
+I am a third-year Ph.D. candidate at [École Centrale de Nantes](https://www.ec-nantes.fr/english-version), conducting robotics research at the [Laboratoire des Sciences du Numérique de Nantes (LS2N)](https://www.ls2n.fr/annuaire/Hanbang%20GAO/). I finshed my Bachelor's and Master's theses from École Centrale de Nantes in 2020 and 2022, respectively. My research interests include modeling and control of parallel and aerial robots, physical human-robot interaction, signal processing, simulation with ROS2 and machine learning.
 
-My doctoral thesis, titled "Management of Physical Human-Cable-Driven Parallel Robot Interactions," is supervised by Dr. [Stéphane Caro](https://scholar.google.fr/citations?user=IiBLzvgAAAAJ&hl=fr) and Dr. [Christine Chevallereau](https://scholar.google.com/citations?user=JzYkhbUAAAAJ&hl=en).
+My doctoral thesis, titled *"Management of Physical Human–Cable-Driven Parallel Robot Interactions,"* is supervised by Dr. [Stéphane Caro](https://scholar.google.fr/citations?user=IiBLzvgAAAAJ&hl=fr) and Dr. [Christine Chevallereau](https://scholar.google.com/citations?user=JzYkhbUAAAAJ&hl=en). This research addresses challenges arising from unknown obstacles and dynamic contacts, distinguishing between two primary interaction scenarios: unintentional collisions and intentional collaboration. It integrates sensor fusion into innovative perception and modeling methodologies, utilizing frequency analysis for precise detection through model-based approaches combined with reinforcement learning techniques, thereby facilitating robust contact identification and adaptive control strategies.
 
-In my spare time, I enjoy playing tennis, rock climbing, and reading. I’m also a polyglot, an extreme sports enthusiast, and a certified diver.
+Outside of academia, my interests include tennis, rock climbing, and reading. Additionally, I am a polyglot, an extreme sports enthusiast, and a certified diver.
