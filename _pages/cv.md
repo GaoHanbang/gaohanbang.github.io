@@ -15,21 +15,21 @@ redirect_from:
 </div>
 
 <div id="cv-container">
-  <object id="cv-object" data="/files/CV_Hanbang_io_en.pdf" type="application/pdf" width="100%" height="800px">
-    <p>Your browser does not support viewing PDFs.
-      <a href="/files/CV_Hanbang_io_en.pdf">Download the PDF</a>.
-    </p>
-  </object>
+  <iframe id="cv-object" src="/files/CV_Hanbang_io_en.pdf" width="100%" height="800px">
+    Your browser does not support viewing PDFs.
+    <a href="/files/CV_Hanbang_io_en.pdf">Download the PDF</a>.
+  </iframe>
 </div>
 
 <script>
 function showCV(lang) {
   var cvObject = document.getElementById('cv-object');
   if (lang === 'en') {
-    cvObject.setAttribute('data', '/files/CV_Hanbang_io_en.pdf');
+    cvObject.setAttribute('src', '/files/CV_Hanbang_io_en.pdf');
   } else if (lang === 'fr') {
-    cvObject.setAttribute('data', '/files/CV_Hanbang_io_fr.pdf');
+    cvObject.setAttribute('src', '/files/CV_Hanbang_io_fr.pdf');
   }
 }
 </script>
+
 
