@@ -12,6 +12,8 @@ redirect_from:
 <div id="cv-selector" style="margin-bottom: 20px;">
   <button onclick="showCV('en')">English</button>
   <button onclick="showCV('fr')">Français</button>
+  <button onclick="showCV('cn')">中文</button>
+  <button onclick="showCV('jp')">日本語</button>
 </div>
 
 <div id="cv-container">
@@ -28,6 +30,10 @@ function showCV(lang) {
     cvObject.setAttribute('src', '/files/CV_Hanbang_io_en.pdf');
   } else if (lang === 'fr') {
     cvObject.setAttribute('src', '/files/CV_Hanbang_io_fr.pdf');
+  } else if (lang === 'cn') {
+    cvObject.setAttribute('src', '/files/CV_Hanbang_io_cn.pdf');
+  } else if (lang === 'jp') {
+    cvObject.setAttribute('src', '/files/CV_Hanbang_io_jp.pdf');
   }
 }
 </script>
