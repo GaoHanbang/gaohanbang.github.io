@@ -12,8 +12,8 @@ redirect_from:
 <div id="cv-selector" style="margin-bottom: 20px;">
   <button onclick="showCV('en')">English</button>
   <button onclick="showCV('fr')">Français</button>
-  <button onclick="showCV('cn')">中文</button>
-  <button onclick="showCV('jp')">日本語</button>
+  <button onclick="showCV('cn')">Chinese</button>
+  <button onclick="showCV('jp')">Japanese</button>
 </div>
 
 <div id="cv-container">
