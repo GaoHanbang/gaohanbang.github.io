@@ -4,6 +4,7 @@ collection: publications
 category: manuscripts
 permalink: /publication/2025-09-30-Collaborative-Manipulation
 status: Under Review
+youtube: "https://www.youtube.com/embed/lq_Inq5T718"
 excerpt: 'In this work, we propose robust methods to estimate the external wrench acting on the moving platform (MP) of a cable-driven parallel robot (CDPR) without mounting any sensors on the MP. We introduce an elastoplastic compliance controller that facilitates collaborative behavior when direct physical contact is applied. The controller’s plasticity and elasticity are tuned via reinforcement learning, which leverages the estimated external force and the robot’s real-time state. Experimental results demonstrate that this approach enables safe, intuitive, and effective human-robot collaboration, advancing embodied intelligence in CDPR applications.'
 date: 2025-09-30
 venue: 'Under review'
