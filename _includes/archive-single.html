@@ -35,7 +35,7 @@
 
     {% if post.collection == 'teaching' %}
       <p>{{ post.type }}, <i>{{ post.venue }}</i>, {{ post.date | default: "1900-01-01" | date: "%Y" }}</p>
-      {% elsif post.collection == 'publications' %}
+    {% elsif post.collection == 'publications' %}
       {% if post.status == "Under Review" %}
         <p>Under Review</p>
       {% elsif post.status == "no" %}
@@ -55,39 +55,25 @@
       </p>
     {% endif %}
     
-    {% if post.citation and post.paperurl and post.slidesurl %}
+    {% if post.citation or post.paperurl or post.slidesurl or post.youtube %}
       <p>
-        Recommended citation: {{ post.citation }}<br />
-        <a href="{{ post.paperurl }}">Download Paper</a> | 
-        <a href="{{ post.slidesurl }}">Download Slides</a>
-        {% if post.youtube %} | <a href="javascript:void(0)" onclick="toggleExperimentVideo(this)">Experiment Video</a>{% endif %}
-      </p>
-    {% elsif post.citation and post.paperurl %}
-      <p>
-        Recommended citation: {{ post.citation }}<br />
-        <a href="{{ post.paperurl }}">Download Paper</a>
-        {% if post.youtube %} | <a href="javascript:void(0)" onclick="toggleExperimentVideo(this)">Experiment Video</a>{% endif %}
-      </p>
-    {% elsif post.citation and post.slidesurl %}
-      <p>
-        Recommended citation: {{ post.citation }}<br />
-        <a href="{{ post.slidesurl }}">Download Slides</a>
-        {% if post.youtube %} | <a href="javascript:void(0)" onclick="toggleExperimentVideo(this)">Experiment Video</a>{% endif %}
-      </p>
-    {% elsif post.citation %}
-      <p>
-        Recommended citation: {{ post.citation }}
-        {% if post.youtube %} | <a href="javascript:void(0)" onclick="toggleExperimentVideo(this)">Experiment Video</a>{% endif %}
-      </p>
-    {% elsif post.paperurl %}
-      <p>
-        <a href="{{ post.paperurl }}">Download Paper</a>
-        {% if post.youtube %} | <a href="javascript:void(0)" onclick="toggleExperimentVideo(this)">Experiment Video</a>{% endif %}
-      </p>
-    {% elsif post.slidesurl %}
-      <p>
-        Download <a href="{{ post.slidesurl }}">Download Slides</a>
-        {% if post.youtube %} | <a href="javascript:void(0)" onclick="toggleExperimentVideo(this)">Experiment Video</a>{% endif %}
+        {% if post.citation %}
+          Recommended citation: {{ post.citation }}<br />
+        {% endif %}
+        
+        {% if post.paperurl %}
+          <a href="{{ post.paperurl }}">Download Paper</a>
+        {% endif %}
+        
+        {% if post.slidesurl %}
+          {% if post.paperurl %} | {% endif %}
+          <a href="{{ post.slidesurl }}">Download Slides</a>
+        {% endif %}
+        
+        {% if post.youtube %}
+          {% if post.paperurl or post.slidesurl %} | {% endif %}
+          <a href="javascript:void(0)" onclick="toggleExperimentVideo(this)">Experiment Video</a>
+        {% endif %}
       </p>
     {% endif %}
     
