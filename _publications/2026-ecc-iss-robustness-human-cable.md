@@ -7,6 +7,7 @@ status: Under Review
 excerpt: "This paper develops a collision-aware control strategy for cable-driven parallel robots (CDPRs) during human–cable interaction. We propose a rapidly exponentially input-to-state stable Control Lyapunov Function (RES–ISS–CLF) controller and augment it with a QP-based tension distribution layer that enforces unilateral cable constraints while applying a smooth, time-varying upper-bound reduction on the contacted cable. The method is evaluated in a cable-wrapping simulator with an arm-like obstacle and shows stable tracking and improved post-contact behaviour compared with PID and CLF–QP baselines."
 date: 2026-01-01
 venue: "European Control Conference (ECC 2026, Under review)"
+paperurl: "http://gaohanbang.github.io/files/ECC26.pdf"
 citation: "R. Keskin, H. Gao, C. Chevallereau, and S. Caro. “Input-to-State Robustness Control for Human–Cable Interaction in Cable-Driven Parallel Robots.” Submitted to the European Control Conference (ECC), 2026."
 ---
 
