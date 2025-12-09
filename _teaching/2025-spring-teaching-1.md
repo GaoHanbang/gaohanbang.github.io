@@ -1,7 +1,7 @@
 ---
 title: "Computer Aided Design (CATIA V5)"
 collection: teaching
-type: "Undergraduate course"
+type: "Graduate course"
 permalink: /teaching/2024-cad-catia-v5
 venue: "École Centrale de Nantes"
 date: 2025-03-01
