@@ -4,7 +4,7 @@ collection: teaching
 type: "Graduate course (M1/M2)"
 permalink: /teaching/2024-chaine-numerique-3dexperience
 venue: "Nantes Université — IUT de Nantes (GMP)"
-date: 2024-10-01
+date: 2025-10-01
 location: "Nantes, France"
 ---
 
