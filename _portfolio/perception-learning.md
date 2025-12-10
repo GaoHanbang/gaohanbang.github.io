@@ -3,8 +3,6 @@ title: "Perception & Learning (Future Integration)"
 collection: portfolio
 permalink: /portfolio/perception-learning/
 excerpt: "Training in image processing and reinforcement learning for future integration into robotics."
-header:
-  teaser: /images/portfolio/perception_learning_teaser.jpg
 ---
 
 <p>

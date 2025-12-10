@@ -3,8 +3,6 @@ title: "Mechanical Design & Digital Engineering"
 collection: portfolio
 permalink: /portfolio/mechanical-design-digital-engineering/
 excerpt: "Mechanical modelling and simulation with modern 3D engineering tools."
-header:
-  teaser: /images/3d_experience_CRAFT.png
 ---
 
 <p>
@@ -15,3 +13,6 @@ My work sits at the intersection of robotics research and hands-on engineering. 
 <strong>Mechanical design &amp; digital engineering</strong><br>
 I specialise in mechanical modelling and simulation with modern 3D engineering tools (e.g., 3DEXPERIENCE/CAD), spanning parametric design, assemblies, digital mock-ups, and simulation-oriented modelling. This expertise is reflected both in my personal research projects and in the engineering courses I teach at university level.
 </p>
+
+![Mechanical Design & Digital Engineering]({{ "/images/3d_experience_CRAFT.png" | relative_url }})
+

@@ -3,8 +3,6 @@ title: "Mechatronics & Experimental Engineering"
 collection: portfolio
 permalink: /portfolio/mechatronics-experimental-engineering/
 excerpt: "Mechatronics experimentation and end-to-end experimental workflows for robotic systems."
-header:
-  teaser: /images/portfolio/mechatronics_teaser.jpg
 ---
 
 <p>
