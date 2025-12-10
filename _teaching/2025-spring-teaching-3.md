@@ -6,7 +6,8 @@ permalink: /teaching/2024-conception-de-mecanique-3dexperience
 venue: "Nantes Université — IUT de Nantes (GMP)"
 date: 2025-09-15
 location: "Nantes, France"
-excerpt: "Short description of portfolio item number 1<br/><img src='/images/cao_3dexperience.jpg'>"
+header:
+  teaser: /images/cao_3dexperience.jpg
 ---
 
 <p>
