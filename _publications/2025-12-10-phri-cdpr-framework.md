@@ -13,6 +13,8 @@ venue: "IEEE Transactions on Robotics (Under review)"
 
 Cable-Driven Parallel Robots (CDPRs) are increasingly deployed in human-shared environments, yet safe and effective physical Human–Robot Interaction (pHRI) remains challenging due to human–cable impacts, human–platform contacts, large workspaces, and practical uncertainty in pose and wrench estimation. This paper proposes a comprehensive framework that jointly addresses human–cable and human–MP interactions within a single safety-first formulation. The method combines (i) collided-cable stiffness reduction together with compliant trajectory adaptation, (ii) an elasto-plastic compliance model designed for transparency and stability without direct force sensing at the MP, and (iii) a feasibility-aware safety manager that enforces wrench-feasible conditions and safe reconfiguration. Experiments with repetitive collaborative tasks validate safe contact handling, continuous task execution after collisions, and favourable collaborative behaviour, while characterising energy implications.
 
+![Scheme of the proposed framework](/images/scheme_tro.png "Scheme of the proposed framework")
+
 ## Key contributions (high level)
 
 - **Unified pHRI management for CDPRs:** A single framework handling both human–cable and human–MP physical contacts.
