@@ -37,3 +37,15 @@ French.
   <li>Model robot/equipment systems and prepare them for simulation and validation</li>
   <li>Apply assembly and process simulation concepts to equipment integration scenarios</li>
 </ul>
+
+<h2>Demo video</h2>
+
+<div style="margin-top: 16px; text-align: center;">
+  <video controls playsinline preload="metadata"
+         style="width: 100%; max-width: 900px; height: auto;">
+    <source src="{{ '/images/video_simulation.mp4' | relative_url }}" type="video/mp4">
+    Your browser does not support the video tag.
+    <a href="{{ '/images/video_simulation.mp4' | relative_url }}">Download the video</a>.
+  </video>
+</div>
+
