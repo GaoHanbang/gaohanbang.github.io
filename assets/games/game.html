@@ -1,0 +1,724 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1" />
+  <title>Mini 3D Racer (Three.js) - Single File</title>
+  <style>
+    html, body { margin: 0; padding: 0; overflow: hidden; background: #0b0f14; height: 100%; font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif; }
+    #hud {
+      position: fixed; inset: 0; pointer-events: none;
+      color: rgba(255,255,255,0.92);
+      text-shadow: 0 1px 2px rgba(0,0,0,0.7);
+    }
+    #panel {
+      position: absolute; top: 14px; left: 14px;
+      background: rgba(0,0,0,0.45);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 12px;
+      padding: 12px 14px;
+      max-width: 420px;
+      pointer-events: none;
+      backdrop-filter: blur(6px);
+    }
+    #title { font-weight: 700; margin-bottom: 6px; letter-spacing: 0.2px; }
+    #instr { font-size: 13px; line-height: 1.35; opacity: 0.95; }
+    #stats {
+      margin-top: 10px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px 12px;
+      font-size: 13px;
+    }
+    .stat { display: flex; justify-content: space-between; gap: 12px; }
+    .label { opacity: 0.78; }
+    .value { font-variant-numeric: tabular-nums; font-weight: 650; }
+    #controls {
+      position: absolute; top: 14px; right: 14px;
+      display: flex; gap: 10px;
+      pointer-events: auto;
+    }
+    button {
+      appearance: none;
+      border: 1px solid rgba(255,255,255,0.15);
+      background: rgba(0,0,0,0.5);
+      color: rgba(255,255,255,0.9);
+      padding: 10px 12px;
+      border-radius: 12px;
+      cursor: pointer;
+      font-weight: 650;
+      letter-spacing: 0.2px;
+      transition: transform 0.05s ease, background 0.15s ease, border-color 0.15s ease;
+    }
+    button:hover { background: rgba(0,0,0,0.62); border-color: rgba(255,255,255,0.25); }
+    button:active { transform: translateY(1px); }
+    #toast {
+      position: absolute; left: 50%; bottom: 16px; transform: translateX(-50%);
+      background: rgba(0,0,0,0.45);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 999px;
+      padding: 10px 14px;
+      font-size: 13px;
+      opacity: 0.0;
+      transition: opacity 0.25s ease;
+      pointer-events: none;
+      backdrop-filter: blur(6px);
+    }
+    #toast.show { opacity: 1.0; }
+    canvas { display: block; }
+  </style>
+<script type="text/javascript" nonce="ab8d87bf21b04351ba701e936aa" src="//local.adguard.org?ts=1770970336628&amp;type=content-script&amp;dmn=s187.convertio.me&amp;url=https%3A%2F%2Fs187.convertio.me%2Fp%2FA-MPYvUolEnNFolkxlbaVA%2F15943d5a5bcfd4bbf4a8ebeeb28d3fcc%2Fgame.html&amp;app=msedge.exe&amp;css=3&amp;js=1&amp;rel=1&amp;rji=1&amp;sbe=1"></script><script type="text/javascript" nonce="ab8d87bf21b04351ba701e936aa" src="//local.adguard.org?ts=1770970336628&amp;name=AdGuard%20Extra&amp;name=AdGuard%20Popup%20Blocker&amp;type=user-script"></script></head>
+<body>
+  <div id="hud">
+    <div id="panel">
+      <div id="title">Mini 3D Racer (Three.js)</div>
+      <div id="instr">
+        <b>Contrôles</b> : ⬆ accélérer · ⬅/➡ tourner · ⬇ frein / marche arrière<br/>
+        <span style="opacity:.85">Astuce :</span> la direction est moins efficace à haute vitesse. Le chrono démarre à la première accélération ou via <b>Start</b>.
+      </div>
+      <div id="stats">
+        <div class="stat"><span class="label">Vitesse</span><span class="value" id="spd">0 km/h</span></div>
+        <div class="stat"><span class="label">Tours</span><span class="value" id="laps">0</span></div>
+        <div class="stat"><span class="label">Chrono</span><span class="value" id="time">00:00.000</span></div>
+        <div class="stat"><span class="label">État</span><span class="value" id="state">Prêt</span></div>
+      </div>
+    </div>
+
+    <div id="controls">
+      <button id="btnStart" title="Démarrer le chrono">Start</button>
+      <button id="btnRestart" title="Réinitialiser la voiture, tours et chrono">Restart</button>
+    </div>
+
+    <div id="toast">Collision !</div>
+  </div>
+
+  <!-- Three.js via CDN (UMD build -> fonctionne en ouvrant un fichier HTML local) -->
+  <script src="https://unpkg.com/three@0.160.0/build/three.min.js"></script>
+  <script>
+    (() => {
+      // =========================
+      // 0) UI helpers
+      // =========================
+      const $ = (id) => document.getElementById(id);
+      const ui = {
+        spd: $("spd"),
+        laps: $("laps"),
+        time: $("time"),
+        state: $("state"),
+        toast: $("toast"),
+        btnStart: $("btnStart"),
+        btnRestart: $("btnRestart"),
+      };
+
+      function formatTime(ms) {
+        const t = Math.max(0, ms);
+        const m = Math.floor(t / 60000);
+        const s = Math.floor((t % 60000) / 1000);
+        const mm = String(m).padStart(2, "0");
+        const ss = String(s).padStart(2, "0");
+        const ms3 = String(Math.floor(t % 1000)).padStart(3, "0");
+        return `${mm}:${ss}.${ms3}`;
+      }
+
+      let toastTimer = 0;
+      function showToast(msg = "Collision !") {
+        ui.toast.textContent = msg;
+        ui.toast.classList.add("show");
+        toastTimer = 0.45; // seconds
+      }
+
+      // =========================
+      // 1) Three.js scene setup
+      // =========================
+      const scene = new THREE.Scene();
+      scene.background = new THREE.Color(0x87b7ff);
+      scene.fog = new THREE.Fog(0x87b7ff, 120, 260);
+
+      const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 500);
+      camera.position.set(0, 12, 18);
+
+      const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      renderer.outputColorSpace = THREE.SRGBColorSpace;
+      document.body.appendChild(renderer.domElement);
+
+      // Lights
+      const hemi = new THREE.HemisphereLight(0xffffff, 0x334455, 0.9);
+      scene.add(hemi);
+
+      const dir = new THREE.DirectionalLight(0xffffff, 0.75);
+      dir.position.set(40, 60, 20);
+      scene.add(dir);
+
+      // Ground
+      {
+        const g = new THREE.PlaneGeometry(600, 600);
+        const m = new THREE.MeshStandardMaterial({ color: 0x2f6b3a, roughness: 1.0, metalness: 0.0 });
+        const ground = new THREE.Mesh(g, m);
+        ground.rotation.x = -Math.PI / 2;
+        ground.position.y = 0;
+        scene.add(ground);
+      }
+
+      // =========================
+      // 2) Track (rectangle loop)
+      //    Road = (inside outer rect) AND (outside inner rect)
+      //    Walls shown with boxes; collisions handled analytically (fast & stable).
+      // =========================
+      const TRACK = {
+        outerHalfX: 70,
+        outerHalfZ: 46,
+        roadWidth: 14,
+      };
+      TRACK.innerHalfX = TRACK.outerHalfX - TRACK.roadWidth;
+      TRACK.innerHalfZ = TRACK.outerHalfZ - TRACK.roadWidth;
+
+      function buildTrackMesh() {
+        // Road ring via Shape + hole (no textures; simple material).
+        const shape = new THREE.Shape();
+        const ox = TRACK.outerHalfX, oz = TRACK.outerHalfZ;
+        const ix = TRACK.innerHalfX, iz = TRACK.innerHalfZ;
+
+        // Outer rectangle (counter-clockwise)
+        shape.moveTo(-ox, -oz);
+        shape.lineTo(-ox,  oz);
+        shape.lineTo( ox,  oz);
+        shape.lineTo( ox, -oz);
+        shape.lineTo(-ox, -oz);
+
+        // Inner rectangle hole (clockwise)
+        const hole = new THREE.Path();
+        hole.moveTo(-ix, -iz);
+        hole.lineTo( ix, -iz);
+        hole.lineTo( ix,  iz);
+        hole.lineTo(-ix,  iz);
+        hole.lineTo(-ix, -iz);
+
+        shape.holes.push(hole);
+
+        const geom = new THREE.ShapeGeometry(shape);
+        geom.rotateX(-Math.PI / 2);
+        const mat = new THREE.MeshStandardMaterial({ color: 0x20242a, roughness: 1.0, metalness: 0.0 });
+        const road = new THREE.Mesh(geom, mat);
+        road.position.y = 0.02;
+        scene.add(road);
+
+        // Inner "infield"
+        const infield = new THREE.Mesh(
+          new THREE.PlaneGeometry(ix * 2, iz * 2),
+          new THREE.MeshStandardMaterial({ color: 0x2a7a42, roughness: 1.0 })
+        );
+        infield.rotation.x = -Math.PI / 2;
+        infield.position.y = 0.01;
+        scene.add(infield);
+
+        // Visual walls (outer + inner) as boxes
+        const wallGroup = new THREE.Group();
+        const wallH = 2.2;
+        const t = 1.0; // thickness
+        const wallMat = new THREE.MeshStandardMaterial({ color: 0x8a8f97, roughness: 0.9 });
+
+        function wallBox(w, h, d, x, y, z) {
+          const mesh = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), wallMat);
+          mesh.position.set(x, y, z);
+          wallGroup.add(mesh);
+        }
+
+        // Outer walls (placed just outside the outer boundary)
+        wallBox(ox * 2 + t * 2, wallH, t, 0, wallH / 2,  oz + t / 2);
+        wallBox(ox * 2 + t * 2, wallH, t, 0, wallH / 2, -oz - t / 2);
+        wallBox(t, wallH, oz * 2 + t * 2,  ox + t / 2, wallH / 2, 0);
+        wallBox(t, wallH, oz * 2 + t * 2, -ox - t / 2, wallH / 2, 0);
+
+        // Inner walls (placed just inside the hole)
+        wallBox(ix * 2 + t * 2, wallH, t, 0, wallH / 2,  iz - t / 2);
+        wallBox(ix * 2 + t * 2, wallH, t, 0, wallH / 2, -iz + t / 2);
+        wallBox(t, wallH, iz * 2 + t * 2,  ix - t / 2, wallH / 2, 0);
+        wallBox(t, wallH, iz * 2 + t * 2, -ix + t / 2, wallH / 2, 0);
+
+        scene.add(wallGroup);
+
+        // Start/finish visual line (checkered bars; no textures)
+        const startZ = -TRACK.outerHalfZ + TRACK.roadWidth * 0.5; // midline of bottom straight
+        const startGroup = new THREE.Group();
+        const barCount = 18;
+        const barW = (TRACK.outerHalfX * 2) / barCount;
+        const barD = 2.0;
+        const y = 0.05;
+
+        for (let i = 0; i < barCount; i++) {
+          const isDark = i % 2 === 0;
+          const mat = new THREE.MeshStandardMaterial({ color: isDark ? 0x101215 : 0xe7e7e7, roughness: 1.0 });
+          const bar = new THREE.Mesh(new THREE.BoxGeometry(barW, 0.08, barD), mat);
+          bar.position.set(-TRACK.outerHalfX + barW * 0.5 + i * barW, y, startZ);
+          startGroup.add(bar);
+        }
+        scene.add(startGroup);
+
+        // A subtle start gate marker
+        const gate = new THREE.Mesh(
+          new THREE.BoxGeometry(0.6, 1.8, 0.6),
+          new THREE.MeshStandardMaterial({ color: 0xffcc55, roughness: 0.6 })
+        );
+        gate.position.set(-TRACK.outerHalfX + 3, 0.9, startZ);
+        scene.add(gate);
+
+        return { startZ };
+      }
+
+      const trackVisual = buildTrackMesh();
+      const START_LINE_Z = trackVisual.startZ;
+      const TOP_REGION_Z = +TRACK.outerHalfZ - TRACK.roadWidth * 0.5;
+
+      // =========================
+      // 3) Obstacles (cones/boxes) with simple circle collision
+      // =========================
+      const obstacles = []; // { mesh, pos2D(Vector2), radius }
+      const obstacleGroup = new THREE.Group();
+      scene.add(obstacleGroup);
+
+      function addCone(x, z, r = 0.9, h = 1.6) {
+        const geo = new THREE.ConeGeometry(r, h, 12);
+        const mat = new THREE.MeshStandardMaterial({ color: 0xff7a1a, roughness: 0.85 });
+        const mesh = new THREE.Mesh(geo, mat);
+        mesh.position.set(x, h * 0.5, z);
+        obstacleGroup.add(mesh);
+        obstacles.push({ mesh, pos: new THREE.Vector2(x, z), radius: r * 0.9 });
+      }
+
+      function addBox(x, z, sx = 1.6, sz = 1.6, sy = 1.2) {
+        const geo = new THREE.BoxGeometry(sx, sy, sz);
+        const mat = new THREE.MeshStandardMaterial({ color: 0x5aa7ff, roughness: 0.85 });
+        const mesh = new THREE.Mesh(geo, mat);
+        mesh.position.set(x, sy * 0.5, z);
+        obstacleGroup.add(mesh);
+        obstacles.push({ mesh, pos: new THREE.Vector2(x, z), radius: 0.5 * Math.max(sx, sz) });
+      }
+
+      // Place a few obstacles on the road (avoid immediate start line)
+      // (Positions picked to stay on the ring: inside outer rect & outside inner rect)
+      addCone(-10, START_LINE_Z + 18);
+      addCone(  6, START_LINE_Z + 26);
+      addBox(  0,  10, 2.1, 2.1, 1.1);
+      addBox( 26,  0, 2.2, 1.8, 1.2);
+      addCone( 32,  18);
+      addCone(-34, -10);
+      addBox(-22,  24, 2.4, 1.7, 1.2);
+
+      // =========================
+      // 4) Car model + physics state
+      // =========================
+      const car = new THREE.Group();
+      scene.add(car);
+
+      // Car visuals (simple primitives)
+      (function buildCarModel() {
+        const bodyMat = new THREE.MeshStandardMaterial({ color: 0xe14141, roughness: 0.6, metalness: 0.05 });
+        const cabinMat = new THREE.MeshStandardMaterial({ color: 0x11161d, roughness: 0.2, metalness: 0.0 });
+        const wheelMat = new THREE.MeshStandardMaterial({ color: 0x1a1a1a, roughness: 1.0, metalness: 0.0 });
+
+        const body = new THREE.Mesh(new THREE.BoxGeometry(2.2, 0.7, 4.0), bodyMat);
+        body.position.set(0, 0.65, 0);
+        car.add(body);
+
+        const cabin = new THREE.Mesh(new THREE.BoxGeometry(1.8, 0.6, 1.8), cabinMat);
+        cabin.position.set(0, 1.05, -0.4);
+        car.add(cabin);
+
+        // Front bumper accent (helps visually identify heading)
+        const bumper = new THREE.Mesh(new THREE.BoxGeometry(2.0, 0.25, 0.35), new THREE.MeshStandardMaterial({ color: 0xffc04a, roughness: 0.7 }));
+        bumper.position.set(0, 0.45, 1.9);
+        car.add(bumper);
+
+        // Wheels (low poly)
+        const wheelGeo = new THREE.CylinderGeometry(0.38, 0.38, 0.28, 12);
+        wheelGeo.rotateZ(Math.PI / 2);
+
+        const wheelPos = [
+          [-1.05, 0.38,  1.35],
+          [ 1.05, 0.38,  1.35],
+          [-1.05, 0.38, -1.35],
+          [ 1.05, 0.38, -1.35],
+        ];
+        for (const [x, y, z] of wheelPos) {
+          const w = new THREE.Mesh(wheelGeo, wheelMat);
+          w.position.set(x, y, z);
+          car.add(w);
+        }
+      })();
+
+      // Physics state (2D on XZ plane)
+      const S = {
+        pos: new THREE.Vector2(0, START_LINE_Z - 6), // start slightly before the line
+        vel: new THREE.Vector2(0, 0),
+        heading: Math.PI / 2, // facing +Z
+        steerSmoothed: 0,
+        laps: 0,
+        started: false,
+        startTime: 0,
+        passedTop: false,
+        lastZ: 0,
+      };
+
+      // Car collision radius (circle approximation for simplicity)
+      const CAR_R = 1.25;
+
+      // =========================
+      // 5) Input
+      // =========================
+      const keys = { up: false, down: false, left: false, right: false };
+      window.addEventListener("keydown", (e) => {
+        if (["ArrowUp","ArrowDown","ArrowLeft","ArrowRight"," "].includes(e.key)) e.preventDefault();
+        if (e.key === "ArrowUp") keys.up = true;
+        if (e.key === "ArrowDown") keys.down = true;
+        if (e.key === "ArrowLeft") keys.left = true;
+        if (e.key === "ArrowRight") keys.right = true;
+
+        // Start automatically on first acceleration
+        if (!S.started && e.key === "ArrowUp") startRace();
+      }, { passive: false });
+
+      window.addEventListener("keyup", (e) => {
+        if (e.key === "ArrowUp") keys.up = false;
+        if (e.key === "ArrowDown") keys.down = false;
+        if (e.key === "ArrowLeft") keys.left = false;
+        if (e.key === "ArrowRight") keys.right = false;
+      });
+
+      // =========================
+      // 6) Race control (Start / Restart)
+      // =========================
+      function resetAll() {
+        S.pos.set(0, START_LINE_Z - 6);
+        S.vel.set(0, 0);
+        S.heading = Math.PI / 2;
+        S.steerSmoothed = 0;
+        S.laps = 0;
+        S.started = false;
+        S.startTime = 0;
+        S.passedTop = false;
+        S.lastZ = S.pos.y;
+
+        ui.laps.textContent = String(S.laps);
+        ui.time.textContent = formatTime(0);
+        ui.state.textContent = "Prêt";
+      }
+
+      function startRace() {
+        if (S.started) return;
+        S.started = true;
+        S.startTime = performance.now();
+        S.passedTop = false;
+        ui.state.textContent = "En course";
+      }
+
+      ui.btnStart.addEventListener("click", () => startRace());
+      ui.btnRestart.addEventListener("click", () => resetAll());
+
+      resetAll();
+
+      // =========================
+      // 7) Vehicle dynamics (simple but not "only arcade")
+      // =========================
+      const PHYS = {
+        // Engine/brake
+        accel: 28.0,        // m/s² along forward
+        reverseAccel: 16.0, // m/s²
+        brake: 42.0,        // m/s²
+
+        // Resistance
+        linearDrag: 0.75,   // proportional damping
+        quadDrag: 0.015,    // speed² drag (stability at high speed)
+        rolling: 5.0,       // reduces forward speed gently
+
+        // Limits
+        maxSpeed: 48.0,     // m/s
+        maxReverse: 16.0,   // m/s
+
+        // Steering
+        steerRate: 2.25,    // rad/s at low speed
+        steerSpeedFactor: 0.13, // reduces steering with speed
+        steerSmoothing: 10.0,   // input smoothing
+
+        // Grip / slip (lateral damping)
+        lateralDampMin: 4.0,   // at high speed -> more drift
+        lateralDampMax: 14.0,  // at low speed -> stable
+
+        // Collision response
+        wallBounce: 0.18,
+        wallDamp: 0.62,
+        obstacleBounce: 0.22,
+        obstacleDamp: 0.55,
+      };
+
+      // Helpers
+      function signNonZero(x) { return x === 0 ? 1 : Math.sign(x); }
+      function clamp(x, a, b) { return Math.max(a, Math.min(b, x)); }
+      function approachZero(x, amount) {
+        const ax = Math.abs(x);
+        if (ax <= amount) return 0;
+        return x - Math.sign(x) * amount;
+      }
+
+      // =========================
+      // 8) Collisions (track walls + obstacles)
+      // =========================
+      function collideTrack(pos, vel) {
+        let hit = false;
+
+        // ---- Outer boundary clamp (keep inside outer rectangle)
+        const ox = TRACK.outerHalfX - CAR_R;
+        const oz = TRACK.outerHalfZ - CAR_R;
+
+        if (pos.x > ox) { pos.x = ox; vel.x = -Math.abs(vel.x) * PHYS.wallBounce; hit = true; }
+        if (pos.x < -ox) { pos.x = -ox; vel.x = Math.abs(vel.x) * PHYS.wallBounce; hit = true; }
+        if (pos.y > oz) { pos.y = oz; vel.y = -Math.abs(vel.y) * PHYS.wallBounce; hit = true; }
+        if (pos.y < -oz) { pos.y = -oz; vel.y = Math.abs(vel.y) * PHYS.wallBounce; hit = true; }
+
+        // ---- Inner boundary (hole): if we enter the inner rectangle, push out on closest axis
+        const ix = TRACK.innerHalfX + CAR_R;
+        const iz = TRACK.innerHalfZ + CAR_R;
+
+        if (Math.abs(pos.x) < ix && Math.abs(pos.y) < iz) {
+          // Penetration depths toward nearest inner wall
+          const dx = ix - Math.abs(pos.x);
+          const dz = iz - Math.abs(pos.y);
+
+          if (dx < dz) {
+            // push along X
+            pos.x = signNonZero(pos.x) * ix;
+            vel.x = -vel.x * PHYS.wallBounce;
+          } else {
+            // push along Z
+            pos.y = signNonZero(pos.y) * iz;
+            vel.y = -vel.y * PHYS.wallBounce;
+          }
+          hit = true;
+        }
+
+        if (hit) vel.multiplyScalar(PHYS.wallDamp);
+        return hit;
+      }
+
+      function collideObstacles(pos, vel) {
+        let hitAny = false;
+        for (const o of obstacles) {
+          const d = pos.clone().sub(o.pos);
+          const dist = d.length();
+          const rSum = CAR_R + o.radius;
+
+          if (dist < rSum) {
+            // Simple circle collision: push out along normal + damp & bounce velocity
+            const n = (dist > 1e-6) ? d.multiplyScalar(1 / dist) : new THREE.Vector2(1, 0);
+            const penetration = (rSum - dist);
+
+            pos.addScaledVector(n, penetration + 1e-3);
+
+            // Reflect velocity along collision normal (very cheap "bounce")
+            const vn = vel.dot(n);
+            if (vn < 0) {
+              vel.addScaledVector(n, -(1 + PHYS.obstacleBounce) * vn);
+            }
+            vel.multiplyScalar(PHYS.obstacleDamp);
+
+            hitAny = true;
+          }
+        }
+        return hitAny;
+      }
+
+      // =========================
+      // 9) Lap counting
+      // =========================
+      function updateLapCounting() {
+        // We count a lap when crossing the start line going +Z,
+        // but only after reaching the "top region" once (prevents immediate lap at the start).
+        if (S.pos.y > TOP_REGION_Z - 2) S.passedTop = true;
+
+        // Crossing start line from below to above, moving forward-ish (+Z velocity)
+        const crossedUp = (S.lastZ < START_LINE_Z && S.pos.y >= START_LINE_Z && S.vel.y > 2.0);
+        if (S.started && S.passedTop && crossedUp) {
+          S.laps += 1;
+          S.passedTop = false;
+          ui.laps.textContent = String(S.laps);
+        }
+
+        S.lastZ = S.pos.y;
+      }
+
+      // =========================
+      // 10) Chase camera (smooth lerp)
+      // =========================
+      const cam = {
+        pos: new THREE.Vector3(),
+        look: new THREE.Vector3(),
+      };
+      cam.pos.copy(camera.position);
+      cam.look.set(0, 0, 0);
+
+      function updateCamera(dt) {
+        // Desired camera behind the car, based on heading
+        const forward3 = new THREE.Vector3(Math.cos(S.heading), 0, Math.sin(S.heading));
+        const carPos3 = new THREE.Vector3(S.pos.x, 0.6, S.pos.y);
+
+        const speed = S.vel.length();
+        const back = 10 + clamp(speed * 0.12, 0, 5);
+        const height = 6 + clamp(speed * 0.05, 0, 2);
+
+        const desiredPos = carPos3.clone()
+          .addScaledVector(forward3, -back)
+          .add(new THREE.Vector3(0, height, 0));
+
+        const desiredLook = carPos3.clone().addScaledVector(forward3, 7).add(new THREE.Vector3(0, 1.0, 0));
+
+        // Lerp for smoothness
+        const kPos = 1 - Math.exp(-dt * 6.5);
+        const kLook = 1 - Math.exp(-dt * 8.5);
+
+        cam.pos.lerp(desiredPos, kPos);
+        cam.look.lerp(desiredLook, kLook);
+
+        camera.position.copy(cam.pos);
+        camera.lookAt(cam.look);
+      }
+
+      // =========================
+      // 11) Main loop
+      // =========================
+      const clock = new THREE.Clock();
+
+      function step(dt) {
+        // Clamp dt for stability on tab-switch
+        dt = Math.min(dt, 0.05);
+
+        // Input -> throttle/brake/steer
+        const steerRaw = (keys.right ? 1 : 0) - (keys.left ? 1 : 0);
+        const speed = S.vel.length();
+
+        // Smooth steer input (avoids twitching)
+        const steerTarget = steerRaw;
+        const steerAlpha = 1 - Math.exp(-PHYS.steerSmoothing * dt);
+        S.steerSmoothed = S.steerSmoothed + (steerTarget - S.steerSmoothed) * steerAlpha;
+
+        // Forward & right vectors in 2D (XZ -> (x,z) stored as (x,y) in Vector2)
+        const forward = new THREE.Vector2(Math.cos(S.heading), Math.sin(S.heading));
+        const right = new THREE.Vector2(-forward.y, forward.x);
+
+        // Longitudinal / lateral components
+        let vF = S.vel.dot(forward);
+        let vL = S.vel.dot(right);
+
+        // Engine & braking (simple but physically plausible)
+        if (keys.up) {
+          vF += PHYS.accel * dt;
+        }
+        if (keys.down) {
+          if (vF > 1.2) {
+            vF -= PHYS.brake * dt; // brake when moving forward
+          } else {
+            vF -= PHYS.reverseAccel * dt; // reverse when nearly stopped / already backward
+          }
+        }
+
+        // Rolling resistance (acts on forward component)
+        vF = approachZero(vF, PHYS.rolling * dt);
+
+        // Drag (applied to whole velocity magnitude; stable at high speed)
+        // We apply in components by scaling reconstructed velocity later.
+
+        // Speed-dependent steering (less effective at high speed)
+        // Also, steering effectiveness depends on how much you're moving.
+        const movingFactor = clamp(Math.abs(vF) / 3.5, 0.0, 1.0);
+        const steerEff = 1 / (1 + speed * PHYS.steerSpeedFactor);
+        const steerRate = PHYS.steerRate * steerEff * movingFactor;
+
+        // Reverse steering when reversing
+        const dirSign = (vF >= 0) ? 1 : -1;
+        S.heading += (S.steerSmoothed * steerRate * dirSign) * dt;
+
+        // Lateral damping (grip) -> creates mild drift at high speed
+        const sp01 = clamp(speed / PHYS.maxSpeed, 0, 1);
+        const lateralDamp = PHYS.lateralDampMax + (PHYS.lateralDampMin - PHYS.lateralDampMax) * sp01;
+        vL *= Math.exp(-lateralDamp * dt);
+
+        // Reconstruct velocity
+        S.vel.copy(forward).multiplyScalar(vF).addScaledVector(right, vL);
+
+        // Global drag (linear + quadratic)
+        const sp = S.vel.length();
+        const drag = (PHYS.linearDrag + PHYS.quadDrag * sp * sp);
+        S.vel.multiplyScalar(1 / (1 + drag * dt));
+
+        // Clamp max speeds
+        const sp2 = S.vel.length();
+        if (sp2 > PHYS.maxSpeed) S.vel.multiplyScalar(PHYS.maxSpeed / sp2);
+
+        // Limit reverse speed by clamping forward component if needed
+        const vF2 = S.vel.dot(forward);
+        if (vF2 < -PHYS.maxReverse) {
+          // Reduce along forward direction only
+          const excess = vF2 + PHYS.maxReverse; // negative
+          S.vel.addScaledVector(forward, -excess);
+        }
+
+        // Integrate position
+        S.pos.addScaledVector(S.vel, dt);
+
+        // Collisions
+        const hitWall = collideTrack(S.pos, S.vel);
+        const hitObs = collideObstacles(S.pos, S.vel);
+        if (hitWall || hitObs) showToast("Collision !");
+
+        // Lap counting
+        updateLapCounting();
+
+        // Update car visual transform
+        car.position.set(S.pos.x, 0, S.pos.y);
+        car.rotation.y = -S.heading + Math.PI / 2; // adjust so model faces +Z at heading=pi/2
+
+        // Update camera
+        updateCamera(dt);
+
+        // UI update
+        const kmh = (S.vel.length() * 3.6);
+        ui.spd.textContent = `${Math.round(kmh)} km/h`;
+
+        if (S.started) {
+          ui.time.textContent = formatTime(performance.now() - S.startTime);
+          ui.state.textContent = "En course";
+        } else {
+          ui.time.textContent = formatTime(0);
+          ui.state.textContent = "Prêt";
+        }
+
+        // Toast fade
+        if (toastTimer > 0) {
+          toastTimer -= dt;
+          if (toastTimer <= 0) ui.toast.classList.remove("show");
+        }
+      }
+
+      function animate() {
+        requestAnimationFrame(animate);
+        const dt = clock.getDelta();
+        step(dt);
+        renderer.render(scene, camera);
+      }
+      animate();
+
+      // Resize
+      window.addEventListener("resize", () => {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+      });
+
+      // Small hint: click anywhere to ensure key focus (some browsers)
+      window.addEventListener("pointerdown", () => {
+        renderer.domElement.focus?.();
+      });
+    })();
+  </script>
+</body>
+</html>
