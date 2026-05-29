@@ -23,4 +23,9 @@ As Cable-Driven Parallel Robots (CDPRs) move into human-shared workspaces, human
 - **Bounded contacted-cable tension regulation:** Rather than driving the contacted cable to slackness, the tension is regulated below a prescribed admissible bound via a scheduled QP upper bound and a reference override on the corresponding servomotor, preserving wrench feasibility and making the cable usable as a handle for collaboration.
 - **Systems-level validation across three scales:** An interaction-flow experiment validates unified transition handling across interaction modes; repeated-task trials quantify compliance transparency, force consistency (including a dynamic comparison of the model-based wrench estimate with a handle-mounted F/T sensor), and non-amplifying power exchange at the MP; user trials with $N=23$ novices assess usability and collaborative accessibility.
 
-
+<div class="local-video-box" style="margin-top: 20px;">
+  <video width="560" height="315" controls>
+    <source src="{{ site.baseurl }}/videos/TRO_video.mp4" type="video/mp4">
+    Your browser does not support the video tag.
+  </video>
+</div>
