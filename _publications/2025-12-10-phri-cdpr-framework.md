@@ -1,47 +1,25 @@
 ---
-title: "A Comprehensive Framework for Safety and Collaborative Management of Physical Human–Robot Interaction in Cable-Driven Parallel Robots"
+title: "A Safety Framework for Collaborative Human–Robot Interaction in Cable-Driven Parallel Robots"
 collection: publications
 category: manuscripts
-permalink: /publication/2025-12-10-phri-cdpr-framework
+permalink: /publication/2026-05-29-safety-framework-phri-cdpr
 status: Under Review
-excerpt: "This manuscript proposes a unified, feasibility-aware framework for safe and effective physical human–robot interaction (pHRI) in cable-driven parallel robots (CDPRs). The approach jointly manages human–cable and human–moving-platform (MP) contacts by combining collided-cable stiffness reduction with MP-level elasto-plastic trajectory compliance, while a feasibility-aware safety manager monitors wrench-feasible conditions and prevents workspace failure under sensing and estimation uncertainties. Experiments on a large-scale CDPR demonstrate safe contact handling, continued task execution after collisions, and favourable collaborative behaviour, with an analysis of the associated energy implications."
-date: 2025-12-10
+excerpt: "This manuscript proposes a feasibility-aware supervisory framework that unifies safety-critical and collaborative physical human–robot interaction (pHRI) in Cable-Driven Parallel Robots (CDPRs) using only onboard cable-tension sensing. By coordinating compliant Moving-Platform (MP) motion with contacted-cable tension regulation, the framework promotes a cable from a hazard to a controlled interaction channel. The central novelty is an interaction strategy supervisor that decides whether releasing a contacted cable is robustly feasible at the current MP pose before any tension is reduced, otherwise routing the response through MP-level compliance alone. Supporting components include an elasto-plastic compliance law for workflow continuity and a bounded contacted-cable tension regulation law. Experiments on the CRAFT platform validate unified mode transitions, force consistency against a handle-mounted F/T sensor, and usability for $N=23$ novice users."
+date: 2026-05-29
 venue: "IEEE Transactions on Robotics (Under review)"
---- 
+---
 
 ## Abstract (short overview)
 
-Cable-Driven Parallel Robots (CDPRs) are increasingly deployed in human-shared environments, yet safe and effective physical Human–Robot Interaction (pHRI) remains challenging due to human–cable impacts, human–platform contacts, large workspaces, and practical uncertainty in pose and wrench estimation. This paper proposes a comprehensive framework that jointly addresses human–cable and human–MP interactions within a single safety-first formulation. The method combines (i) collided-cable stiffness reduction together with compliant trajectory adaptation, (ii) an elasto-plastic compliance model designed for transparency and stability without direct force sensing at the MP, and (iii) a feasibility-aware safety manager that enforces wrench-feasible conditions and safe reconfiguration. Experiments with repetitive collaborative tasks validate safe contact handling, continuous task execution after collisions, and favourable collaborative behaviour, while characterising energy implications.
+As Cable-Driven Parallel Robots (CDPRs) move into human-shared workspaces, human factors must be treated as a primary design objective to enable safe and usable collaboration. In practice, operators may contact a cable or the Moving-Platform (MP) during operation; although cables are traditionally considered hazards, we instead promote them to a controlled interaction channel capable of carrying both disturbances and cooperative intent. We introduce a feasibility-aware supervisory framework that unifies safety-critical and collaborative pHRI in CDPRs using only onboard cable-tension sensing, by coordinating compliant MP motion with contacted-cable tension regulation. The central novelty is an interaction strategy supervisor that decides whether releasing a contacted cable is robustly feasible at the current MP pose before any tension is reduced, and otherwise routes the response through MP-level compliance alone. Supporting this decision leads to two new control components: an elasto-plastic compliance law that provides workflow continuity between safety reaction and intentional guidance, and a cable-tension regulation law that bounds the contacted cable below a prescribed limit while preserving wrench balance. Experiments on a CDPR platform, named CRAFT, validate three claims: an interaction-flow scenario demonstrates unified transitions across interaction modes; repeated-task trials quantify transparency, force consistency (cross-checked against a handle-mounted F/T sensor), and non-amplifying MP-level energetics; and user trials with novices assess usability and collaborative accessibility.
 
-![Scheme of the proposed framework](/images/scheme_tro.png "Scheme of the proposed framework")
+![Block diagram of the proposed framework](/images/fig04_framework_block_diagram.png "Block diagram of the proposed framework for pHRI management in a CDPR")
 
 ## Key contributions (high level)
 
-- **Unified pHRI management for CDPRs:** A single framework handling both human–cable and human–MP physical contacts.
-- **Cable-stiffness reduction + trajectory compliance:** Controlled tension release for the contacted cable paired with MP compliant motion.
-- **Feasibility-aware safety management:** Online monitoring of wrench-feasible conditions to prevent workspace failure under interaction.
-- **Experimental validation:** Repetitive collaborative task studies showing safety, continuity, and energy-characterisation results.
+- **Interaction strategy supervisor:** A decision layer that, given contact information, selects among three strategies (compliant MP response only; release and bound the contacted cable; release plus workspace-boundary repulsion). The decision is driven by a robust release-feasibility test that checks, before any tension is reduced, whether the contacted cable can be kept below a prescribed bound at the current pose under bounded tension and length-tracking uncertainties.
+- **Elasto-plastic compliance for workflow continuity:** An MP-level compliance law that continuously updates a plastic equilibrium with an explicit restoration term, linking reflexive safety reaction, sustained cooperative guidance, and return to nominal motion using only cable-tension–derived wrench estimates.
+- **Bounded contacted-cable tension regulation:** Rather than driving the contacted cable to slackness, the tension is regulated below a prescribed admissible bound via a scheduled QP upper bound and a reference override on the corresponding servomotor, preserving wrench feasibility and making the cable usable as a handle for collaboration.
+- **Systems-level validation across three scales:** An interaction-flow experiment validates unified transition handling across interaction modes; repeated-task trials quantify compliance transparency, force consistency (including a dynamic comparison of the model-based wrench estimate with a handle-mounted F/T sensor), and non-amplifying power exchange at the MP; user trials with $N=23$ novices assess usability and collaborative accessibility.
 
-
-### Inspiration
-
-This work is inspired by the following papers:
-
-1. **Human-Robot Collaboration**  
-   Li, Guanrui; Liu, Xinyang; Loianno, Giuseppe.  
-   *Human-Aware Physical Human–Robot Collaborative Transportation and Manipulation With Multiple Aerial Robots.*  
-   IEEE Transactions on Robotics, vol. 41, pp. 762–781, 2025.  
-   [doi:10.1109/TRO.2024.3502508](https://doi.org/10.1109/TRO.2024.3502508)
-
-2. **Elasto-Plastic Compliance Controller**  
-   Michael Panzirsch, Harsimran Singh, Xuwei Wu, et al.  
-   *Virtual elasto-plastic robot compliance to active environments.*  
-   Science Robotics, vol. 10, no. 99, 2025, eadq1703.  
-   [doi:10.1126/scirobotics.adq1703](https://doi.org/10.1126/scirobotics.adq1703)
-
-3. **Reinforcement Learning for Compliance Path Design**  
-   Yunlong Song, Angel Romero, Matthias Müller, Vladlen Koltun, Davide Scaramuzza.  
-   *Reaching the limit in autonomous racing: Optimal control versus reinforcement learning.*  
-   Science Robotics, vol. 8, no. 82, 2023, eadg1462.  
-   [doi:10.1126/scirobotics.adg1462](https://doi.org/10.1126/scirobotics.adg1462)
 
