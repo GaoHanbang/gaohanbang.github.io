@@ -93,7 +93,7 @@ redirect_from:
 <div class="about-page" markdown="0">
 
 <div class="about-hero">
-  <span class="lead">Making robots that treat people as collaborators, not obstacles.</span>
+  <span class="lead">Enabling large-scale robots to treat people as collaborators, not merely as safety concerns.</span>
   <span class="sub">Ph.D. candidate in robotics · École Centrale de Nantes · soon to be Dr. (July 2026)</span>
 </div>
 
@@ -123,4 +123,4 @@ This question drives my research. My doctoral work, *"Management of Physical Hum
 
 I received my Bachelor of Engineering degree in Automation from Beijing Institute of Technology, and completed the European Advanced Robotics Master's programme at École Centrale de Nantes (2020–2022).
 
-Outside academia, my interests include tennis, rock climbing, and reading. I am also a certified diver and enjoy outdoor and water sports.
+Outside academia, my interests include tennis, rock climbing, and reading. I am also a certified diver and polyglot.
