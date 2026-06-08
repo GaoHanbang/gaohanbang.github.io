@@ -7,6 +7,277 @@ author_profile: true
 
 {% include base_path %}
 
-{% for post in site.teaching reversed %}
-  {% include archive-single.html %}
-{% endfor %}
+<style>
+.teaching-page { max-width: 820px; }
+.teaching-page p { line-height: 1.6; }
+
+/* Statement */
+.teaching-statement { font-size: 1.05em; }
+
+/* Numbers strip */
+.teaching-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin: 1.6em 0 0.6em;
+}
+.teaching-stats .stat {
+  flex: 1 1 150px;
+  text-align: center;
+  padding: 16px 10px;
+  border: 1px solid #e6e6e6;
+  border-radius: 10px;
+  background: #fafafa;
+}
+.teaching-stats .stat .num {
+  display: block;
+  font-size: 1.5em;
+  font-weight: 700;
+  line-height: 1.1;
+  color: #2f6db5;
+}
+.teaching-stats .stat .lab {
+  display: block;
+  font-size: 0.82em;
+  color: #555;
+  margin-top: 4px;
+}
+.teaching-legend { font-size: 0.85em; color: #777; margin: 0.2em 0 0; }
+
+/* Carousel */
+.carousel {
+  position: relative;
+  margin: 1.8em 0;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 18px rgba(0,0,0,0.12);
+  background: #000;
+}
+.carousel__track {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 3 / 2;
+}
+.carousel__slide {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.9s ease-in-out;
+  pointer-events: none;
+}
+.carousel__slide.is-active { opacity: 1; pointer-events: auto; }
+.carousel__slide img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.carousel__caption {
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  padding: 28px 16px 12px;
+  color: #fff;
+  font-size: 0.9em;
+  background: linear-gradient(to top, rgba(0,0,0,0.72), rgba(0,0,0,0));
+}
+.carousel__btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 40px; height: 40px;
+  border: none;
+  border-radius: 50%;
+  background: rgba(0,0,0,0.42);
+  color: #fff;
+  font-size: 1.3em;
+  line-height: 40px;
+  text-align: center;
+  cursor: pointer;
+  z-index: 3;
+  transition: background 0.2s;
+}
+.carousel__btn:hover { background: rgba(0,0,0,0.7); }
+.carousel__btn--prev { left: 12px; }
+.carousel__btn--next { right: 12px; }
+.carousel__dots {
+  position: absolute;
+  left: 0; right: 0; bottom: 8px;
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  z-index: 3;
+}
+.carousel__dot {
+  width: 9px; height: 9px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(255,255,255,0.5);
+  cursor: pointer;
+  padding: 0;
+}
+.carousel__dot.is-active { background: #fff; }
+
+/* Course sections */
+.course { margin: 1.6em 0; }
+.course h2 { margin-bottom: 0.2em; }
+.course .meta {
+  font-size: 0.85em;
+  color: #666;
+  margin: 0 0 0.5em;
+}
+.course .meta .tag {
+  display: inline-block;
+  background: #eef3fa;
+  color: #2f6db5;
+  border-radius: 6px;
+  padding: 2px 8px;
+  margin: 2px 4px 2px 0;
+  font-weight: 600;
+}
+</style>
+
+<div class="teaching-page">
+
+  <p class="teaching-statement">
+    Teaching has been one of the most rewarding parts of my time in Nantes. Across an engineering
+    <em>grande école</em> (École Centrale de Nantes) and a technical institute (IUT de Nantes, Nantes Université),
+    in both French and English, I have come to enjoy meeting students wherever they start from, learning new
+    things alongside them, and sharpening my own teaching as I go. Watching students grow more confident and
+    capable gives me a sense of accomplishment that mirrors what I find in research.
+  </p>
+
+  <div class="teaching-stats">
+    <div class="stat"><span class="num">280 h</span><span class="lab">Taught</span></div>
+    <div class="stat"><span class="num">2</span><span class="lab">Institutions (ECN &amp; IUT&nbsp;Nantes)</span></div>
+    <div class="stat"><span class="num">FR / EN</span><span class="lab">Bilingual delivery</span></div>
+    <div class="stat"><span class="num">CM·TD·TP·DS</span><span class="lab">Full teaching function</span></div>
+  </div>
+  <p class="teaching-legend">
+    As a contracted lecturer (vacataire / ATER), I carried the full teaching function: lectures (CM),
+    tutorials (TD), lab sessions (TP), and setting and grading exams (DS).
+  </p>
+
+  <!-- Photo carousel -->
+  <div class="carousel" id="teachingCarousel" aria-roledescription="carousel" aria-label="Teaching photos">
+    <div class="carousel__track">
+      <div class="carousel__slide is-active">
+        <img src="{{ base_path }}/images/teaching/teaching-1.jpg" alt="With engineering students beside a KUKA robot arm in the robotics lab" loading="lazy">
+        <div class="carousel__caption">With students beside a KUKA arm in the robotics lab.</div>
+      </div>
+      <div class="carousel__slide">
+        <img src="{{ base_path }}/images/teaching/teaching-2.jpg" alt="Students at an industrial robot cell during a hands-on session" loading="lazy">
+        <div class="carousel__caption">Hands-on session at an industrial robot cell.</div>
+      </div>
+      <div class="carousel__slide">
+        <img src="{{ base_path }}/images/teaching/teaching-3.jpg" alt="Student modelling work shown in 3DEXPERIENCE during a CAD class" loading="lazy">
+        <div class="carousel__caption">Student modelling work in 3DEXPERIENCE (CAD class).</div>
+      </div>
+      <div class="carousel__slide">
+        <img src="{{ base_path }}/images/teaching/teaching-4.jpg" alt="Lecturing a Master-level CAD course as ATER at Nantes Université and ECN" loading="lazy">
+        <div class="carousel__caption">Lecturing a Master-level CAD course (CAO) as ATER, Nantes Université / ECN.</div>
+      </div>
+    </div>
+    <button class="carousel__btn carousel__btn--prev" aria-label="Previous photo">&#10094;</button>
+    <button class="carousel__btn carousel__btn--next" aria-label="Next photo">&#10095;</button>
+    <div class="carousel__dots" role="tablist"></div>
+  </div>
+
+  <h1 id="courses-taught">Courses taught</h1>
+
+  <div class="course">
+    <h2>Mechanical Design &amp; CAD <span style="font-weight:400;color:#888;">— Conception de Mécanique / CAO</span></h2>
+    <p class="meta">
+      <span class="tag">ECN &amp; IUT de Nantes</span>
+      <span class="tag">Undergraduate → Master</span>
+      <span class="tag">FR / EN</span>
+      <span class="tag">CATIA V5 (2013)</span>
+      <span class="tag">3DEXPERIENCE (2024)</span>
+    </p>
+    <p>
+      I have taught computer-aided design across two generations of tooling — from CATIA V5 through to the
+      3DEXPERIENCE platform — covering part and assembly modelling, end-to-end digital engineering workflows
+      (modelling → simulation → validation), and equipment design with applications to robotics. The course
+      mixes lectures with hands-on tutorials, guiding students from first sketches to consistent, industry-ready
+      digital models.
+    </p>
+  </div>
+
+  <div class="course">
+    <h2>Computer Science <span style="font-weight:400;color:#888;">— Informatique</span></h2>
+    <p class="meta">
+      <span class="tag">IUT de Nantes</span>
+      <span class="tag">Undergraduate</span>
+      <span class="tag">FR</span>
+      <span class="tag">Excel</span>
+      <span class="tag">VBA</span>
+      <span class="tag">Programming</span>
+    </p>
+    <p>
+      An introduction to computing for engineering students: spreadsheet modelling in Excel, automation with
+      VBA, and the fundamentals of programming. The emphasis is on building practical, transferable skills that
+      students can apply directly in technical and project work.
+    </p>
+  </div>
+
+  <div class="course">
+    <h2>Robotics &amp; Simulation</h2>
+    <p class="meta">
+      <span class="tag">ECN &amp; IUT de Nantes</span>
+      <span class="tag">Undergraduate → Master</span>
+      <span class="tag">FR / EN</span>
+      <span class="tag">KUKA · FANUC · UR</span>
+      <span class="tag">Robot modelling</span>
+    </p>
+    <p>
+      Closest to my research, this strand covers the modelling and simulation of industrial robots and
+      production lines, with hands-on experiments on KUKA, FANUC, and Universal Robots (UR) hardware. Students
+      move from kinematic modelling to programming and operating real robot cells safely — a natural bridge
+      between classroom theory and the physical human–robot interaction questions I study in my
+      <a href="{{ base_path }}/publications/">research</a>.
+    </p>
+  </div>
+
+  <p style="margin-top:2em;color:#555;">
+    Whether students come from an engineering school or a technical institute, I try to meet them where they are
+    and send them away a little more capable — and a little more curious — than before.
+  </p>
+
+</div>
+
+<script>
+(function () {
+  var root = document.getElementById('teachingCarousel');
+  if (!root) return;
+  var slides = Array.prototype.slice.call(root.querySelectorAll('.carousel__slide'));
+  var dotsWrap = root.querySelector('.carousel__dots');
+  var prev = root.querySelector('.carousel__btn--prev');
+  var next = root.querySelector('.carousel__btn--next');
+  var index = 0, timer = null, DELAY = 5000;
+
+  slides.forEach(function (_, i) {
+    var d = document.createElement('button');
+    d.className = 'carousel__dot' + (i === 0 ? ' is-active' : '');
+    d.setAttribute('aria-label', 'Go to photo ' + (i + 1));
+    d.addEventListener('click', function () { go(i); reset(); });
+    dotsWrap.appendChild(d);
+  });
+  var dots = Array.prototype.slice.call(dotsWrap.children);
+
+  function go(i) {
+    index = (i + slides.length) % slides.length;
+    slides.forEach(function (s, j) { s.classList.toggle('is-active', j === index); });
+    dots.forEach(function (d, j) { d.classList.toggle('is-active', j === index); });
+  }
+  function step() { go(index + 1); }
+  function start() { timer = setInterval(step, DELAY); }
+  function stop() { if (timer) { clearInterval(timer); timer = null; } }
+  function reset() { stop(); start(); }
+
+  next.addEventListener('click', function () { go(index + 1); reset(); });
+  prev.addEventListener('click', function () { go(index - 1); reset(); });
+  root.addEventListener('mouseenter', stop);
+  root.addEventListener('mouseleave', start);
+
+  start();
+})();
+</script>
