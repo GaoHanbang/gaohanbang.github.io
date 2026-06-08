@@ -50,6 +50,8 @@ author_profile: true
 .pub-card h3 { font-size: 1.08em; margin: 2px 0 4px; line-height: 1.3; }
 .pub-card h3 a { color: #1a1a1a; text-decoration: none; }
 .pub-card h3 a:hover { color: #2f6db5; }
+.pub-authors { font-size: 0.85em; color: #444; margin: 0 0 3px; }
+.pub-authors strong { color: #1a1a1a; }
 .pub-venue { font-size: 0.86em; color: #666; margin: 0 0 10px; }
 .pub-venue .yr { color: #2f6db5; font-weight: 600; }
 
@@ -129,6 +131,9 @@ author_profile: true
           </div>
 
           <h3><a href="{{ base_path }}{{ post.url }}">{{ post.title }}</a></h3>
+          {% if post.authors %}
+            <p class="pub-authors">{{ post.authors | replace: 'H. Gao', '<strong>H. Gao</strong>' }}</p>
+          {% endif %}
           <p class="pub-venue">
             {% if post.status == 'Under Review' %}
               Submitted to <i>{{ post.venue }}</i>

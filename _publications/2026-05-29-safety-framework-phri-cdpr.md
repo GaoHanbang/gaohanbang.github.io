@@ -3,6 +3,7 @@ title: "A Safety Framework for Collaborative Human–Robot Interaction in Cable-
 collection: publications
 category: manuscripts
 permalink: /publication/2026-05-29-safety-framework-phri-cdpr
+authors: "H. Gao, C. Chevallereau, S. Caro"
 status: Under Review
 excerpt: "This manuscript submitted to IEEE Transactions on Robotics proposes a feasibility-aware supervisory framework that unifies safety-critical and collaborative physical human–robot interaction (pHRI) in Cable-Driven Parallel Robots (CDPRs) using only onboard cable-tension sensing. By coordinating compliant Moving-Platform (MP) motion with contacted-cable tension regulation, the framework promotes a cable from a hazard to a controlled interaction channel. The central novelty is an interaction strategy supervisor that decides whether releasing a contacted cable is robustly feasible at the current MP pose before any tension is reduced, otherwise routing the response through MP-level compliance alone. Supporting components include an elasto-plastic compliance law for workflow continuity and a bounded contacted-cable tension regulation law. Experiments on the CRAFT platform validate unified mode transitions, force consistency against a handle-mounted F/T sensor, and usability for 23 novice participants."
 date: 2026-05-29

@@ -3,6 +3,7 @@ title: "Input-to-State Robustness Control for Human–Cable Interaction in Cable
 collection: publications
 category: conferences
 permalink: /publication/2026-ecc-iss-robustness-human-cable
+authors: "R. Keskin, H. Gao, C. Chevallereau, S. Caro"
 status: Under Review
 excerpt: "This paper develops a collision-aware control strategy for cable-driven parallel robots (CDPRs) during human–cable interaction. We propose a rapidly exponentially input-to-state stable Control Lyapunov Function (RES–ISS–CLF) controller and augment it with a QP-based tension distribution layer that enforces unilateral cable constraints while applying a smooth, time-varying upper-bound reduction on the contacted cable. The method is evaluated in a cable-wrapping simulator with an arm-like obstacle and shows stable tracking and improved post-contact behaviour compared with PID and CLF–QP baselines."
 date: 2026-01-01
